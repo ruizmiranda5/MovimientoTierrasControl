@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36327.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovimientoTierrasControl", "MovimientoTierrasControl.csproj", "{D20E6472-760B-C24E-C574-FAC8A87EE9C4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D20E6472-760B-C24E-C574-FAC8A87EE9C4}.Debug|x64.ActiveCfg = Debug|x64
+		{D20E6472-760B-C24E-C574-FAC8A87EE9C4}.Debug|x64.Build.0 = Debug|x64
+		{D20E6472-760B-C24E-C574-FAC8A87EE9C4}.Release|x64.ActiveCfg = Release|x64
+		{D20E6472-760B-C24E-C574-FAC8A87EE9C4}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF224836-DAAD-4627-B085-D7BF12D1D8FB}
+	EndGlobalSection
+EndGlobal
