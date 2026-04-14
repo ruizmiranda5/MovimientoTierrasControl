@@ -70,6 +70,21 @@ namespace MovimientoTierrasControl
             AddCommand(flow, "Calculadora geodésica (WGS84/UTM)", "PSR_CALC_GEODESICO");
             AddCommand(flow, "Verificar alineamiento DG-2018", "PSR_CHECK_DG2018");
 
+            AddSection(flow, "BIM - Intercambio");
+            AddCommand(flow, "Exportar IFC 4.3 (infraestructuras)", "PSR_BIM_EXPORTAR_IFC");
+            AddCommand(flow, "Exportar Navisworks (.nwc)", "PSR_BIM_EXPORTAR_NWC");
+            AddCommand(flow, "Adjuntar nube de puntos (.rcp)", "PSR_BIM_NUBE_PUNTOS");
+            AddCommand(flow, "Georreferenciar DWG (WGS84)", "PSR_BIM_GEOLOCALIZAR");
+            AddCommand(flow, "Exportar coordenadas Revit", "PSR_BIM_REVIT_COORDS");
+            AddCommand(flow, "Listar XRefs", "PSR_BIM_LISTAR_XREFS");
+
+            AddSection(flow, "BIM - Control de calidad");
+            AddCommand(flow, "Auditoría del modelo", "PSR_BIM_AUDITORIA");
+            AddCommand(flow, "Clash tuberías vs superficie", "PSR_BIM_CLASH_TUBERIAS");
+            AddCommand(flow, "Inventario LOD por capa", "PSR_BIM_LOD");
+            AddCommand(flow, "Quantity Takeoff por capa", "PSR_BIM_QTO");
+            AddCommand(flow, "Aplicar PSet PSR_BIM (IFC)", "PSR_BIM_PSET");
+
             this.Controls.Add(flow);
         }
 

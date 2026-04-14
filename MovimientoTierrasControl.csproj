@@ -40,6 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
 
+  <!-- AEC Property Data para Property Sets → IFC PSets. Se activa con
+       /p:DefineConstants=AEC_PROPDATA cuando la DLL está disponible. -->
+  <ItemGroup Condition="'$(DefineConstants.Contains(AEC_PROPDATA))' == 'true'">
+    <Reference Include="AecPropDataMgd">
+      <HintPath>$(CIVIL_2024_PATH)\AecPropDataMgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="AecBaseMgd">
+      <HintPath>$(CIVIL_2024_PATH)\AecBaseMgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
   <!-- Integración opcional con Trimble Business Center SDK.
        Requiere TBC instalado y la constante TBC_SDK definida. -->
   <ItemGroup Condition="'$(DefineConstants.Contains(TBC_SDK))' == 'true'">
