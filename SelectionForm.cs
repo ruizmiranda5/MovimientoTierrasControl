@@ -66,6 +66,10 @@ namespace MovimientoTierrasControl
             AddCommand(flow, "Diagrama de masas (Bruckner)", "PSR_DIAGRAMA_MASAS");
             AddCommand(flow, "Reporte ejecutivo HTML", "PSR_REPORTE_EJECUTIVO");
 
+            AddSection(flow, "Geodesia y Norma DG-2018");
+            AddCommand(flow, "Calculadora geodésica (WGS84/UTM)", "PSR_CALC_GEODESICO");
+            AddCommand(flow, "Verificar alineamiento DG-2018", "PSR_CHECK_DG2018");
+
             this.Controls.Add(flow);
         }
 
