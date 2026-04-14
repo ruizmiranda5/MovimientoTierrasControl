@@ -1,60 +1,128 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.Civil.ApplicationServices;
-using Autodesk.Civil.DatabaseServices;
 
 namespace MovimientoTierrasControl
 {
+    /// <summary>
+    /// Menú principal PSR con botones para todas las herramientas
+    /// disponibles. Cada botón llama al comando Civil 3D asociado
+    /// usando Document.SendStringToExecute.
+    /// </summary>
     public class SelectionForm : Form
     {
-        private Button btnSelectAlignment;
-        private Button btnSelectSurface;
-        private Button btnSelectSampleLine;
-
         public SelectionForm()
         {
-            this.Text = "Selección de objetos Civil 3D";
-            this.Width = 300;
-            this.Height = 200;
+            this.Text = "PSR - Movimiento de Tierras (" + PSRConfig.ProjectName + ")";
+            this.Size = new Size(520, 640);
+            this.StartPosition = FormStartPosition.CenterScreen;
 
-            btnSelectAlignment = new Button { Text = "Seleccionar Alineamiento", Top = 20, Width = 250, Left = 20 };
-            btnSelectSurface = new Button { Text = "Seleccionar Superficie", Top = 60, Width = 250, Left = 20 };
-            btnSelectSampleLine = new Button { Text = "Seleccionar Sample Line", Top = 100, Width = 250, Left = 20 };
+            var flow = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                AutoScroll = true,
+                Padding = new Padding(10)
+            };
 
-            btnSelectAlignment.Click += BtnSelectAlignment_Click;
-            btnSelectSurface.Click += BtnSelectSurface_Click;
-            btnSelectSampleLine.Click += BtnSelectSampleLine_Click;
+            AddSection(flow, "Superficies y Volúmenes");
+            AddCommand(flow, "Volumen entre superficies", "PSR_VOLUMEN");
+            AddCommand(flow, "Listar superficies", "PSR_LISTAR_SUPERFICIES");
+            AddCommand(flow, "Estadísticas de superficie", "PSR_ESTADISTICAS_SUPERFICIE");
+            AddCommand(flow, "Actualizar / Rebuild superficie", "PSR_ACTUALIZAR_SUPERFICIE");
 
-            Controls.Add(btnSelectAlignment);
-            Controls.Add(btnSelectSurface);
-            Controls.Add(btnSelectSampleLine);
+            AddSection(flow, "Alineamientos y Perfiles");
+            AddCommand(flow, "Listar alineamientos", "PSR_LISTAR_ALINEAMIENTOS");
+            AddCommand(flow, "Exportar perfil (TN/Proy) a CSV", "PSR_EXPORTAR_PERFIL");
+
+            AddSection(flow, "Secciones y Sample Lines");
+            AddCommand(flow, "Listar sample lines", "PSR_LISTAR_SAMPLELINES");
+            AddCommand(flow, "Crear sample lines a intervalo", "PSR_CREAR_SAMPLELINES");
+            AddCommand(flow, "Cubicación por secciones", "PSR_CUBICACION_SECCIONES");
+
+            AddSection(flow, "Puntos COGO / Topografía");
+            AddCommand(flow, "Importar puntos desde CSV", "PSR_IMPORTAR_PUNTOS");
+            AddCommand(flow, "Exportar puntos a CSV", "PSR_EXPORTAR_PUNTOS");
+            AddCommand(flow, "Crear grupo de puntos por prefijo", "PSR_GRUPO_PUNTOS");
+
+            AddSection(flow, "Parcelas, Corredores, Redes");
+            AddCommand(flow, "Listar parcelas", "PSR_LISTAR_PARCELAS");
+            AddCommand(flow, "Listar corredores", "PSR_LISTAR_CORREDORES");
+            AddCommand(flow, "Rebuild corredores", "PSR_REBUILD_CORREDORES");
+            AddCommand(flow, "Listar redes de tuberías", "PSR_LISTAR_REDES");
+
+            AddSection(flow, "Control de Calidad (QA/QC)");
+            AddCommand(flow, "Comparar puntos vs superficie", "PSR_QAQC_PUNTOS");
+
+            AddSection(flow, "Intercambio / Trimble");
+            AddCommand(flow, "Exportar LandXML", "PSR_EXPORTAR_LANDXML");
+            AddCommand(flow, "Importar LandXML", "PSR_IMPORTAR_LANDXML");
+            AddCommand(flow, "Exportar puntos a Trimble", "PSR_EXPORTAR_TRIMBLE");
+            AddCommand(flow, "Exportar replanteo de eje", "PSR_REPLANTEO_EJE");
+
+            AddSection(flow, "Reportes");
+            AddCommand(flow, "Diagrama de masas (Bruckner)", "PSR_DIAGRAMA_MASAS");
+            AddCommand(flow, "Reporte ejecutivo HTML", "PSR_REPORTE_EJECUTIVO");
+
+            AddSection(flow, "Geodesia y Norma DG-2018");
+            AddCommand(flow, "Calculadora geodésica (WGS84/UTM)", "PSR_CALC_GEODESICO");
+            AddCommand(flow, "Verificar alineamiento DG-2018", "PSR_CHECK_DG2018");
+
+            AddSection(flow, "BIM - Intercambio");
+            AddCommand(flow, "Exportar IFC 4.3 (infraestructuras)", "PSR_BIM_EXPORTAR_IFC");
+            AddCommand(flow, "Exportar Navisworks (.nwc)", "PSR_BIM_EXPORTAR_NWC");
+            AddCommand(flow, "Adjuntar nube de puntos (.rcp)", "PSR_BIM_NUBE_PUNTOS");
+            AddCommand(flow, "Georreferenciar DWG (WGS84)", "PSR_BIM_GEOLOCALIZAR");
+            AddCommand(flow, "Exportar coordenadas Revit", "PSR_BIM_REVIT_COORDS");
+            AddCommand(flow, "Listar XRefs", "PSR_BIM_LISTAR_XREFS");
+
+            AddSection(flow, "BIM - Control de calidad");
+            AddCommand(flow, "Auditoría del modelo", "PSR_BIM_AUDITORIA");
+            AddCommand(flow, "Clash tuberías vs superficie", "PSR_BIM_CLASH_TUBERIAS");
+            AddCommand(flow, "Inventario LOD por capa", "PSR_BIM_LOD");
+            AddCommand(flow, "Quantity Takeoff por capa", "PSR_BIM_QTO");
+            AddCommand(flow, "Aplicar PSet PSR_BIM (IFC)", "PSR_BIM_PSET");
+
+            this.Controls.Add(flow);
         }
 
-        private void BtnSelectAlignment_Click(object sender, EventArgs e)
+        private static void AddSection(FlowLayoutPanel parent, string title)
         {
-            var ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            var res = ed.GetEntity("Selecciona un alineamiento:");
-            if (res.Status == PromptStatus.OK)
-                ed.WriteMessage("\nAlineamiento seleccionado: " + res.ObjectId.ToString());
+            var lbl = new Label
+            {
+                Text = title,
+                AutoSize = false,
+                Width = 470,
+                Height = 26,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(52, 152, 219),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(8, 0, 0, 0),
+                Margin = new Padding(0, 10, 0, 4)
+            };
+            parent.Controls.Add(lbl);
         }
 
-        private void BtnSelectSurface_Click(object sender, EventArgs e)
+        private static void AddCommand(FlowLayoutPanel parent, string label, string command)
         {
-            var ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            var res = ed.GetEntity("Selecciona una superficie:");
-            if (res.Status == PromptStatus.OK)
-                ed.WriteMessage("\nSuperficie seleccionada: " + res.ObjectId.ToString());
-        }
-
-        private void BtnSelectSampleLine_Click(object sender, EventArgs e)
-        {
-            var ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            var res = ed.GetEntity("Selecciona una sample line:");
-            if (res.Status == PromptStatus.OK)
-                ed.WriteMessage("\nSample Line seleccionada: " + res.ObjectId.ToString());
+            var btn = new Button
+            {
+                Text = label + "   [" + command + "]",
+                Width = 470,
+                Height = 30,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Margin = new Padding(0, 2, 0, 2)
+            };
+            btn.Click += (s, e) =>
+            {
+                var doc = Application.DocumentManager.MdiActiveDocument;
+                if (doc != null)
+                    doc.SendStringToExecute(command + " ", true, false, true);
+            };
+            parent.Controls.Add(btn);
         }
     }
 }
