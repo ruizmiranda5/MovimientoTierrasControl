@@ -3,26 +3,69 @@
     <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
     <Platforms>x64</Platforms>
+    <RootNamespace>MovimientoTierrasControl</RootNamespace>
+    <AssemblyName>MovimientoTierrasControl</AssemblyName>
+    <!-- Define TBC_SDK en línea de comandos (msbuild /p:DefineConstants=TBC_SDK)
+         para habilitar la integración con Trimble Business Center. -->
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="AcCoreMgd">
       <HintPath>$(ACAD_2024_PATH)\AcCoreMgd.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="AcDbMgd">
       <HintPath>$(ACAD_2024_PATH)\AcDbMgd.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="AcMgd">
       <HintPath>$(ACAD_2024_PATH)\AcMgd.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="AecBaseMgd">
       <HintPath>..\..\..\..\..\Program Files\Autodesk\Civil 3D 2024 Object Enabler\AecBaseMgd.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="AeccDbMgd">
       <HintPath>$(CIVIL_2024_PATH)\AeccDbMgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="AeccPressurePipesMgd">
+      <HintPath>$(CIVIL_2024_PATH)\AeccPressurePipesMgd.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
 
+  <!-- Integración opcional con Trimble Business Center SDK.
+       Requiere TBC instalado y la constante TBC_SDK definida. -->
+  <ItemGroup Condition="'$(DefineConstants.Contains(TBC_SDK))' == 'true'">
+    <Reference Include="Trimble.Vce.Core">
+      <HintPath>$(TBC_PATH)\Trimble.Vce.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Trimble.Vce.Data">
+      <HintPath>$(TBC_PATH)\Trimble.Vce.Data.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Trimble.Vce.Alignment">
+      <HintPath>$(TBC_PATH)\Trimble.Vce.Alignment.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Trimble.Vce.Surface">
+      <HintPath>$(TBC_PATH)\Trimble.Vce.Surface.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Trimble.Vce.GeometricObjects">
+      <HintPath>$(TBC_PATH)\Trimble.Vce.GeometricObjects.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Trimble.Vce.Command">
+      <HintPath>$(TBC_PATH)\Trimble.Vce.Command.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
 </Project>
